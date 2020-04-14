@@ -56,14 +56,22 @@ onedrive.path          <- paste0('C:\\Users\\zheny\\OneDrive\\fuwaihospital\\',
                                  'publication\\2020papers\\atriumization')
 
 
-# microarray data path
-#
 
+"
+load the processed RNA-seq data
+
+"
 setwd('C:\\Users\\zheny\\Documents\\Rdata_projects')
 load('GSE64403.Rdata')
+
+"
+microarray data path in my local PC
+"
+
 GSE1479.raw.path     <- 'C:\\Users\\zheny\\Documents\\Rdata_projects\\GSE1479'
 GSE775.raw.path      <- 'C:\\Users\\zheny\\Documents\\Rdata_projects\\GSE775'
 
+#---
 # expand the data deposition layout
 # define the dir structure or file names
 #----
