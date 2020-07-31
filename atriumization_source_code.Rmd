@@ -3,6 +3,7 @@ title     : " R markdown to explain the protocol in the paper "
 author    : " Yisong Zhen "
 date      : " 18 May 2020 "
 output    : html_document
+fig_caption: true
 ---
 
 In this protocol, I will step by step describe the analysis procedure.
@@ -530,8 +531,8 @@ atriumization.GSEA.analysis <- function( GSE775.exprs, GSE1479.exprs,
     return(result)
 }
 
-"
 
+"
 gsea.result <- atriumization.GSEA.analysis(GSE775.exprs,GSE1479.exprs)
 
 "
@@ -1381,6 +1382,21 @@ figure.3         <- get.figure.3(GSE64403.results,GSE1479.result)
 figure.4         <- get.figure.4(GSE775.result,GSE64403.results)
 ```
 
+```{r figure.caption.1,fig.cap=paste("Figure 1. Curation of atrium specific genes from the benchmark set GSE1479.")}
+(figure.1)
+```
+
+```{r figure.caption.2, fig.cap=paste("Figure 2. Using atrium gene set in myocardial infarction model and the GSEA result")}
+(figure.2)
+```
+
+```{r figure.caption.3,fig.cap=paste("Figure  3. Atrium gene expression pattern were replicated in an independent dataset GSE64403. ")}
+(figure.3)
+```
+
+```{r figure.caption.4,fig.cap=paste("Figure 4. Multiple comparison of Aldh1a2 expression between different groups in dataset GSE64403")}
+(figure.4)
+```
 
 ```{r save_figure_result, echo=TRUE, eval=FALSE}
 "

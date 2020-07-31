@@ -13,9 +13,8 @@ pkgs <- c( 'tidyverse','Rsubread','org.Mm.eg.db','edgeR',
            'GenomicAlignments', 'magrittr', 'network',
            'reshape2', 'stringr', 'rtracklayer','mgu74a.db',
            'TxDb.Mmusculus.UCSC.mm10.knownGene', 'GGally',
-           'Mus.musculus', 'org.Mm.eg.db', 'FactoMineR',
+           'Mus.musculus', 'FactoMineR',
            'BSgenome.Mmusculus.UCSC.mm10')
-
 
 
 load.lib           <- lapply(pkgs, require, character.only = TRUE)
@@ -52,8 +51,8 @@ mRNA.GRCm38.GTF.file   <- paste0( genome.annotation.dir,'/igenomes.mm10.ensembl.
 
 
 # data output
-onedrive.path          <- paste0('C:\\Users\\zheny\\OneDrive\\fuwaihospital\\',
-                                 'publication\\2020papers\\atriumization')
+onedrive.path          <- paste0('~/onedrive/fuwaihospital/',
+                                 'publication/2020papers/atriumization')
 
 
 
@@ -61,15 +60,15 @@ onedrive.path          <- paste0('C:\\Users\\zheny\\OneDrive\\fuwaihospital\\',
 load the processed RNA-seq data
 
 "
-setwd('C:\\Users\\zheny\\Documents\\Rdata_projects')
+setwd('../data/rdata')
 load('GSE64403.Rdata')
 
 "
 microarray data path in my local PC
 "
 
-GSE1479.raw.path     <- 'C:\\Users\\zheny\\Documents\\Rdata_projects\\GSE1479'
-GSE775.raw.path      <- 'C:\\Users\\zheny\\Documents\\Rdata_projects\\GSE775'
+GSE1479.raw.path     <- 'data/raw/GSE1479'
+GSE775.raw.path      <- 'data/raw/GSE775'
 
 #---
 # expand the data deposition layout
@@ -182,17 +181,11 @@ secure.GSE1479.PCA <- function(GSE1479.exprs) {
     return(complete.data.pca)
 }
 
+# Figure.1 sample size = 36
 get.PCA.plot <- function(GSE1479.exprs) {
     pca.result        <-  secure.GSE1479.PCA(GSE1479.exprs)
     whole.av.attr     <- factor( c( rep(1,6),rep(2:3,5, each = 3)), 
                                  levels = 1:3, labels = c('heart','ventricle','atrium'))
-    GSE1479.colnames  <- c('E10.5_1','E10.5_2','E10.5_3','E11.5_1','E11.5_2',
-                                  'E11.5_3','E12.5_1','E12.5_2','E12.5_3','E12.5_1A',
-                                  'E12.5_2A','E12.5_3A','E13.5_1','E13.5_2','E13.5_3',
-                                  'E13.5_1A','E13.5_2A','E13.5_3A','E14.5_1','E14.5_2',
-                                  'E14.5_3','E14.5_1A','E14.5_2A','E14.5_3A','E16.5_1',
-                                  'E16.5_2','E16.5_3','E16.5_1A','E16.5_2A','E16.5_3A',
-                                  'E18.5_1','E18.5_2','E18.5_3','E18.5_1A','E18.5_2A','E18.5_1A')
     GSE1479_pca_ggplot <- data.frame( PC1 = pca.result$x[,1], 
                                       PC2 = pca.result$x[,2], 
                                       AV  = whole.av.attr) %>% 
@@ -381,6 +374,7 @@ get.figure.1 <- function(GSE1479.exprs) {
 # Figure 2.
 #---
 
+# Figure.2 sample size = 6 * 9 = 54
 .get.GSE775.groups <- function() {
     groups <- list( h.1  = c(1:3,24:26,42:44),
                     h.4  = c(13:15,36:38,54:56),
@@ -433,7 +427,9 @@ get.nppa.regression.plot <- function(data.exprs, gene.name = 'Nppa') {
 }
 
 "
-get.nppa.regression.plot(data.affy)
+gene.tidy.data <- secure.tidy.data(GSE775.result)
+gene.tidy.data %>% select(region = ilv)
+get.nppa.regression.plot(GSE775.result)
 "
 
 get.acta2.boxplot <- function(data.exprs, gene.name = 'Acta2') {
@@ -607,6 +603,7 @@ get.figure.2 <- function(GSE775.exprs,GSE1479.exprs) {
     return(GSE64403.atrium.pValue)
 }
 
+# Figure.3.B sample size = 4
 .get.heart.tissue.deseq2    <- function(rsubread = GSE64403.results) {
     GSE64403.heart.tissue              <- .get.rsubread.exprs(rsubread)[,29:36]
     GSE64403.cardiac.tissue.condition  <- factor( rep(1:4,each = 2),levels = 1:4,
@@ -657,6 +654,7 @@ secure.GSE64403.GSEA <- function(GSE1479.exprs, chamber = 'atrium') {
 foo <- secure.GSE64403.GSEA(GSE1479.exprs)
 "
 
+# figure.3.D sample szie = 2 * 3 = 6
 secure.Sln.from.GSE64403 <- function(GSE64403.rsubread = GSE64403.results) {
     GSE64403.atrium.pValue             <- .get.isolated.cell.deseq2(GSE64403.rsubread)
     GSE64403.cardiac.cells             <- .get.rsubread.exprs(GSE64403.rsubread)[,7:12]
@@ -688,6 +686,8 @@ secure.Sln.from.GSE64403 <- function(GSE64403.rsubread = GSE64403.results) {
     return(prelim.figure.A)
 }
 
+
+# Figure.3.A sample size = 10
 get.AV.postSurgery.heatmap <- function(GSE64403.rsubread = GSE64403.results ) {
     av.genes               <- c('Sln','Tbx5','Nr2f2','Myl7','Myl4',
                                 'Hey2','Irx4','Kcne1','Myh7','Pln')
@@ -718,6 +718,7 @@ get.AV.postSurgery.heatmap <- function(GSE64403.rsubread = GSE64403.results ) {
     
 }
 
+# figure.3.C sample size = 3 * 4 = 12
 get.AV.isolated.heatmap <- function(GSE64403.rsubread = GSE64403.results) {
     av.genes               <- c('Sln','Tbx5','Nr2f2','Myl7','Myl4',
                                 'Hey2','Irx4','Kcne1','Myh7','Pln')
@@ -815,6 +816,13 @@ get.GSE775.limma.result <- function (GSE775.exprs,
     return(limma.result)
 }
 
+"
+acta2.result.1 <- get.GSE775.limma.result(GSE775.result)
+head(acta2.result.1)
+rownames(acta2.result.1) <- rownames(acta2.result.1) %>% 
+                            getSYMBOL('mgu74a') %>% make.names(unique = T)
+acta2.result.1['Acta2',]
+"
 .secure.RA.signaling.pathway <- function(spiece = 'mouse', manual = T) {
     
     RA.components.human <- list(HDAC3 = 8841,	PRKCG = 5582, CDK1  = 983,  RBP1  = 5947, RARA = 5914,
@@ -851,6 +859,8 @@ get.GSE775.limma.result <- function (GSE775.exprs,
     if (spiece == 'human') return(ra.human.genes)
 }
 
+# Figure.4.A sample size = 54
+# see the function .get.GSE775.groups()
 .get.RA.infarction.tidydata <- function(data.affy, gene.name = 'Aldh1a2') {
     ra.gene.1       <- secure.tidy.data(data.affy, gene.name)
     ra.gene.1.probe <- .get.probe.id(gene.name)
@@ -989,6 +999,7 @@ get.RA.infarction.plot.1(data.affy)
     rownames(GSE64403.tissue.pValue.1)   <- rsubread.gene.symbols
     rownames(GSE64403.tissue.pValue.2)   <- rsubread.gene.symbols
     rownames(GSE64403.tissue.pValue.3)   <- rsubread.gene.symbols
+    # Figure.4.B sample size n = 2 * 3
     GSE64403.tidy.data   <- data.frame(groups = c('vAd','vD1S','vD1R'),
                                        exprs  = c(GSE64403.tissue.pValue.1[gene.name,]$baseMeanB,
                                                   GSE64403.tissue.pValue.1[gene.name,]$baseMeanA,
@@ -1212,6 +1223,38 @@ get.figure.4 <- function(data.affy,data.rsubread) {
 }
 
 
+.get.hif.targets <- function() {
+    setwd('/Users/zhenyisong/Downloads')
+    hif.targets <- read.xlsx('hif-targets.xlsx')
+    gene.names  <- hif.targets[[1]] %>% unlist
+    return(gene.names)
+}
+
+
+hif.signaling.GSEA <- function( GSE775.exprs, GSE1479.exprs, 
+                                group = 'w.1', contrast = 'ilv - lv') {
+    limma.result     <- get.GSE775.limma.result(GSE775.result, group, contrast) 
+    hif.set          <- .get.hif.targets()
+    hif.index        <- rownames(limma.result) %>% getSYMBOL('mgu74a') %in% hif.set
+    hif.probe.id     <- rownames(limma.result)[hif.index]
+   # t.statistic      <- limma.result$t[RA.index] %>% 
+    #    sum()/sum(RA.index) * sqrt(sum(RA.index))
+    logFC.data            <- limma.result$logFC
+    names(logFC.data)     <- rownames(limma.result)
+    logFC.data.sorted     <- sort(logFC.data, decreasing = TRUE)
+    logFC.data.sorted.id  <- seq(1:length(logFC.data.sorted))
+    hif.pseudo.binary      <- names(logFC.data.sorted) %>% 
+        getSYMBOL('mgu74a') %in% hif.set
+    hif.pseudo.id          <- logFC.data.sorted.id[hif.pseudo.binary]
+    names(logFC.data.sorted) <- logFC.data.sorted.id
+    hif.gsea.set           <- data.frame( diseaseId = rep('hif',length(hif.pseudo.id)), 
+                                         geneId    = hif.pseudo.id, check.names = TRUE)
+    hif.GSEA               <- GSEA(logFC.data.sorted, 
+                                  TERM2GENE = hif.gsea.set, minGSSize = 15, 
+                                  pvalueCutoff = 1)
+    return(RA.GSEA)
+}
+
 #---
 # double check
 #---
@@ -1311,7 +1354,7 @@ export_excel_av_genes <- function(GSE1479.exprs) {
 
 }
 
-
+"
 # function already written and perform real analysis now!
 
 # align the RNA-seq raw data
@@ -1322,12 +1365,20 @@ align.raw.data(raw.data.layout = raw.data.dir,
 GSE64403.results <- get.featureCount.result(raw.data.layout = raw.data.dir, 
                                             GTF.file        = mRNA.GRCm38.GTF.file)
 
-"
-get the final figures!
-"
 
+#get the final figures!
+
+setwd('/Users/zhenyisong/codes')
 GSE775.result    <- get.microarray.exprs(GSE775.raw.path)
 GSE1479.result   <- get.microarray.exprs(GSE1479.raw.path)
+
+"
+
+'
+md5 atriumization.Rdata
+MD5 (atriumization.Rdata) = 8c8c3189d047da5276b9c324ace2cdfd
+'
+
 figure.1         <- get.figure.1(GSE1479.result)
 figure.2         <- get.figure.2(GSE775.result,GSE1479.result)
 figure.3         <- get.figure.3(GSE64403.results,GSE1479.result)
@@ -1336,13 +1387,13 @@ figure.4         <- get.figure.4(GSE775.result,GSE64403.results)
 "
 save the figures!
 "
-ggsave(filename = 'Figure.1.png', plot = figure.1, dpi = 600, unit = 'mm',
+ggsave(filename = 'Figure.1.jpeg', plot = figure.1, dpi = 600, unit = 'mm',
        scale = 1, width = 300, height = 250, limitsize = F, path = onedrive.path)
-ggsave(filename = 'Figure.2.png', plot = figure.2, dpi = 600, unit = 'mm',
+ggsave(filename = 'Figure.2.jpeg', plot = figure.2, dpi = 600, unit = 'mm',
        scale = 1, width = 300, height = 250, limitsize = F, path = onedrive.path)
-ggsave(filename = 'Figure.3.png', plot = figure.3, dpi = 600, unit = 'mm',
+ggsave(filename = 'Figure.3.jpeg', plot = figure.3, dpi = 600, unit = 'mm',
        scale = 1, width = 300, height = 250, limitsize = F, path = onedrive.path)
-ggsave(filename = 'Figure.4.png', plot = figure.4, dpi = 600, unit = 'mm',
+ggsave(filename = 'Figure.4.jpeg', plot = figure.4, dpi = 600, unit = 'mm',
        scale = 1, width = 300, height = 250, limitsize = F, path = onedrive.path)
 
 
@@ -1353,26 +1404,3 @@ in order to double check the expression trend.
 "
 .datset.GSE775.check()
 .datset.GSE64403.check()
-
-"
-
-data.affy          <- GSE775.result 
-data.rsubread      <- GSE64403.results
-GSE775.exprs       <- GSE775.result
-GSE1479.exprs      <- GSE1479.result
-GSE64403.rsubread  <- GSE64403.results
-
-
-
- 
-
-RA.signaling.GSEA(GSE775.result,GSE1479.result,'w.8')
-
-#.get.probe.id('Sln')
-
-
-
-
-setwd(project.layout$rdata)
-save.image('GSE64403.Rdata')
-quit('no')
